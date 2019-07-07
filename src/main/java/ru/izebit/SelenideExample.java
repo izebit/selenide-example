@@ -1,6 +1,8 @@
 package ru.izebit;
 
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.WebDriverRunner;
@@ -21,14 +23,34 @@ import java.util.concurrent.TimeUnit;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
+/**
+ * It's an simple example of using Selenide framework.
+ * This program checks friend requests on LinkedIn.com and accepts them if they exist.
+ * @see <a href="">read more</a>
+ * @author Artem Konovalov
+ */
 
 @Slf4j
 public class SelenideExample {
-    public static void main(String[] args) {
-        String username = args[0];
-        String password = args[1];
+    @Parameter(names = {"--username", "-u"}, required = true)
+    private String username;
+    @Parameter(names = {"--password", "-p"}, required = true)
+    private String password;
+    @Parameter(names = {"--remote-selenium-url", "-url"})
+    private String remoteSeleniumUrl = "http://127.0.0.1:4444/wd/hub";
 
-        WebDriver webDriver = initWebDriver("http://127.0.0.1:4444/wd/hub");
+
+    public static void main(String[] args) {
+        SelenideExample app = new SelenideExample();
+        JCommander.newBuilder()
+                .addObject(app)
+                .build()
+                .parse(args);
+        app.run();
+    }
+
+    private void run() {
+        WebDriver webDriver = initWebDriver(remoteSeleniumUrl);
         login(username, password);
         int acceptedRequests = acceptRequests();
         System.out.println(acceptedRequests);
@@ -44,10 +66,10 @@ public class SelenideExample {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.setExperimentalOption("useAutomationExtension", false);
         chromeOptions.addArguments(
-                "disable-infobars", // disabling infobars
-                "--disable-extensions", // disabling extensions
-                "--disable-dev-shm-usage", // overcome limited resource problems
-                "--no-sandbox", // Bypas
+                "disable-infobars",
+                "--disable-extensions",
+                "--disable-dev-shm-usage",
+                "--no-sandbox",
                 "--incognito",
                 "--window-size=1920,1080",
                 "--headless",
