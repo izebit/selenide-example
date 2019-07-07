@@ -26,7 +26,7 @@ import static com.codeborne.selenide.Selenide.*;
 /**
  * It's an simple example of using Selenide framework.
  * This program checks friend requests on LinkedIn.com and accepts them if they exist.
- * @see <a href="">read more</a>
+ * @see <a href="https://www.izebit.ru/2019/07/getting-started-with-selenide.html">read more</a>
  * @author Artem Konovalov
  */
 
